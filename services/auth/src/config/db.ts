@@ -1,0 +1,15 @@
+import mongoose from "mongoose";
+import mognoose from "mongoose";
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI as string, {
+      dbName: "food_delivery_app",
+    });
+    console.log("Connected to mongo db");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export default connectDB;
