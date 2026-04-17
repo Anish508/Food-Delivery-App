@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAppData } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,22 +8,15 @@ type Role = "customer" | "rider" | "seller" | null;
 
 const SelectRole = () => {
   const [role, setRole] = useState<Role>(null);
-  const { setUser, user, loading } = useAppData();
+  const { setUser } = useAppData();
   const navigate = useNavigate();
-
-  // Redirect to home if user already has a role
-  useEffect(() => {
-    if (!loading && user?.role) {
-      navigate("/", { replace: true });
-    }
-  }, [user?.role, loading, navigate]);
 
   const roles: Role[] = ["customer", "rider", "seller"];
 
   const addRole = async () => {
     try {
       const token = localStorage.getItem("token");
-      const { data } = await axios.put(
+      const result = await axios.put(
         `${authService}/api/auth/add-role`,
         { role },
         {
@@ -33,17 +26,14 @@ const SelectRole = () => {
         },
       );
 
-      localStorage.setItem("token", data.token);
-      setUser(data.user);
-
+      localStorage.setItem("token", result.data.token);
+      setUser(result.data.user);
       navigate("/", { replace: true });
     } catch (error) {
       alert("Something went wrong...");
       console.log(error);
     }
   };
-
-  if (loading) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center px-4">

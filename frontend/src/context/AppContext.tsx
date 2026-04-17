@@ -57,11 +57,10 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       value={{
         isAuth,
         loading,
+        user,
         setIsAuth,
         setLoading,
         setUser,
-        user,
-        refetchUser: fetchUser,
       }}
     >
       {children}
