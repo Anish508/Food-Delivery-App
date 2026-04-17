@@ -5,10 +5,12 @@ import { authService } from "../main";
 import toast from "react-hot-toast";
 import { useGoogleLogin } from "@react-oauth/google";
 import { FaGoogle, FaLock } from "react-icons/fa";
+import { useAppData } from "../context/AppContext";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { refetchUser } = useAppData();
 
   const responseGoogle = async (authResult: any) => {
     setLoading(true);
@@ -20,7 +22,11 @@ const Login = () => {
       localStorage.setItem("token", result.data.token);
       toast.success(result.data.message);
 
-      navigate("/");
+      // Refetch user data to update context
+      await refetchUser();
+
+      // Navigate to select-role; ProtectedRoute will redirect to / if user has role
+      navigate("/select-role", { replace: true });
     } catch (error) {
       console.log("error", error);
       toast.error("Problem while login");
