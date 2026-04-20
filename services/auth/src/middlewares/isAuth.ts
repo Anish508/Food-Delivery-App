@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { IUser } from "../model/users";
+import User, { IUser } from "../model/users";
 
 export interface AuthenticatedRequest extends Request {
   user?: IUser | null;
@@ -12,40 +12,74 @@ export const isAuth = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
+    // 1. Get Authorization header
     const authHeader = req.headers.authorization;
+
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(400).json({
-        message: "Please Login - No auth header",
+      res.status(401).json({
+        message: "Unauthorized - No token provided",
       });
       return;
     }
 
+    // 2. Extract token
     const token = authHeader.split(" ")[1];
 
     if (!token) {
-      res.status(400).json({
-        message: "Please Login - Token missing",
+      res.status(401).json({
+        message: "Unauthorized - Token missing",
       });
       return;
     }
 
-    const decodedValue = jwt.verify(
+    // 3. Verify token
+    const decoded = jwt.verify(
       token,
       process.env.JWT_SEC as string,
     ) as JwtPayload;
 
-    if (!decodedValue || !decodedValue.user) {
-      res.status(400).json({
-        message: "Invalid Token",
+    // 4. Validate payload
+    if (!decoded || !decoded.id) {
+      res.status(401).json({
+        message: "Unauthorized - Invalid token",
       });
       return;
     }
 
-    req.user = decodedValue.user;
+    // 5. Fetch fresh user from DB
+    const user = await User.findById(decoded.id).select("-__v");
+
+    if (!user) {
+      res.status(404).json({
+        message: "User not found",
+      });
+      return;
+    }
+
+    // 6. Attach user to request
+    req.user = user;
+
+    // 7. Continue
     next();
-  } catch (error) {
+  } catch (error: any) {
+    // Handle JWT specific errors
+    if (error.name === "TokenExpiredError") {
+      res.status(401).json({
+        message: "Token expired",
+      });
+      return;
+    }
+
+    if (error.name === "JsonWebTokenError") {
+      res.status(401).json({
+        message: "Invalid token",
+      });
+      return;
+    }
+
+    // Generic error
     res.status(500).json({
-      message: "Please Login - JWT error",
+      message: "Authentication failed",
     });
   }
 };

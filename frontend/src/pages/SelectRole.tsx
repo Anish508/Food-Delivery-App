@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { useAppData } from "../context/AppContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { authService } from "../main";
+import { useAppStore } from "../store/useAppStore";
 
 type Role = "customer" | "rider" | "seller" | null;
 
 const SelectRole = () => {
   const [role, setRole] = useState<Role>(null);
-  const { setUser } = useAppData();
+  const setUser = useAppStore((state) => state.setUser);
   const navigate = useNavigate();
 
   const roles: Role[] = ["customer", "rider", "seller"];

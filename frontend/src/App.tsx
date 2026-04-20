@@ -7,7 +7,16 @@ import PublicRoute from "./components/PublicRoute";
 import SelectRole from "./pages/SelectRole";
 import { Navbar } from "./components/Navbar";
 import Account from "./pages/Account";
+import { useAppStore } from "./store/useAppStore";
+import { useEffect } from "react";
 const App = () => {
+  const fetchUser = useAppStore((state) => state.fetchUser);
+  const fetchGeoLocation = useAppStore((state) => state.fetchGeoLocation);
+  useEffect(() => {
+    fetchUser();
+    fetchGeoLocation();
+  }, []);
+
   return (
     <BrowserRouter>
       <Navbar />

@@ -10,8 +10,8 @@ export interface User {
 
 export interface LocationData {
   latitude: number;
-  logintude: number;
-  fromattedAddress: string;
+  longitude: number;
+  formattedAddress: string;
 }
 
 export interface AppContextType {

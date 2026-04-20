@@ -1,8 +1,11 @@
 import { Navigate, useLocation, Outlet } from "react-router-dom";
-import { useAppData } from "../context/AppContext";
+import { useAppStore } from "../store/useAppStore";
 
 const ProtectedRoute = () => {
-  const { isAuth, user, loading } = useAppData();
+  const user = useAppStore((state) => state.user);
+  const isAuth = useAppStore((state) => state.isAuth);
+  const loading = useAppStore((state) => state.loading);
+
   const location = useLocation();
 
   if (loading) return null;

@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useAppData } from "../context/AppContext";
+import { useEffect, useState } from "react";
 import { useLocation, useSearchParams, Link } from "react-router-dom";
 import { CgShoppingCart } from "react-icons/cg";
 import { BiMapPin, BiSearch } from "react-icons/bi";
+import { useAppStore } from "../store/useAppStore";
 
 export const Navbar = () => {
-  const { isAuth } = useAppData();
+  const isAuth = useAppStore((state) => state.isAuth);
+  const city = useAppStore((state) => state.city);
+
   const currentLocation = useLocation();
 
   const isHomePage = currentLocation.pathname === "/";
@@ -68,7 +70,7 @@ export const Navbar = () => {
               {/* Location */}
               <div className="flex items-center gap-2 px-3 py-2 sm:border-r text-gray-700 bg-gray-50 sm:bg-transparent">
                 <BiMapPin className="h-4 w-4 text-orange-700" />
-                <span className="text-sm truncate max-w-[120px]">City</span>
+                <span className="text-sm truncate max-w-[120px]">{city}</span>
               </div>
 
               {/* Search Input */}

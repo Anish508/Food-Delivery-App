@@ -1,29 +1,33 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppData } from "../context/AppContext";
 import { authService } from "../main";
 import toast from "react-hot-toast";
 import { useGoogleLogin } from "@react-oauth/google";
 import { FaGoogle, FaLock } from "react-icons/fa";
+import { useAppStore } from "../store/useAppStore";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser, setIsAuth } = useAppData();
+
+  const setUser = useAppStore((state) => state.setUser);
+  const setIsAuth = useAppStore((state) => state.setIsAuth);
 
   const responseGoogle = async (authResult: any) => {
     setLoading(true);
+
     try {
       const result = await axios.post(`${authService}/api/auth/login`, {
         code: authResult.code,
       });
 
       localStorage.setItem("token", result.data.token);
-      toast.success(result.data.message);
-      setLoading(false);
+
       setUser(result.data.user);
       setIsAuth(true);
+
+      toast.success(result.data.message);
       navigate("/");
     } catch (error) {
       console.log("error", error);
