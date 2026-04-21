@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import User, { IUser } from "../model/users";
+
+export interface IUser {
+  _id: string;
+  name: string;
+  email: string;
+  image: string;
+  role: string;
+}
 
 export interface AuthenticatedRequest extends Request {
   user?: IUser | null;
@@ -39,7 +46,7 @@ export const isAuth = async (
     ) as JwtPayload;
 
     // 4. Validate payload
-    if (!decoded || !decoded.user) {
+    if (!decoded || !decoded.id) {
       res.status(401).json({
         message: "Unauthorized - Invalid token",
       });
@@ -72,4 +79,19 @@ export const isAuth = async (
       message: "Authentication failed",
     });
   }
+};
+
+export const isSeller = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const user = req.user;
+  if (user && user.role !== "seller") {
+    res.status(401).json({
+      message: "You are not authorised seller",
+    });
+    return;
+  }
+  next();
 };
