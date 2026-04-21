@@ -18,7 +18,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const result = await axios.post(`${authService}/api/auth/login`, {
+      const result = await axios.post(`${authService}/auth/login`, {
         code: authResult.code,
       });
 

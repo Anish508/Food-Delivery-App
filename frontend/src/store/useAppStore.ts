@@ -48,7 +48,7 @@ export const useAppStore = create<AppState>((set) => ({
         return;
       }
 
-      const { data } = await axios.get(`${authService}/api/auth/me`, {
+      const { data } = await axios.get(`${authService}/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -116,7 +116,7 @@ export const useAppStore = create<AppState>((set) => ({
       console.log(`Got position — Lat: ${latitude}, Lon: ${longitude}`);
 
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=en`,
         {
           headers: {
             // Nominatim requires a User-Agent identifying your app
@@ -131,7 +131,11 @@ export const useAppStore = create<AppState>((set) => ({
       console.log("Nominatim response:", geoData);
 
       const formattedAddress = geoData.display_name || "Current location";
-      const locationData: LocationData = { latitude, longitude, formattedAddress };
+      const locationData: LocationData = {
+        latitude,
+        longitude,
+        formattedAddress,
+      };
 
       set({
         location: locationData,
@@ -147,8 +151,8 @@ export const useAppStore = create<AppState>((set) => ({
       if (message === "GEOLOCATION_TIMEOUT") {
         console.warn(
           "Geolocation timed out after 10 s. " +
-          "This is common on Windows when OS Location Services are disabled. " +
-          "Check: Settings → Privacy & Security → Location → On.",
+            "This is common on Windows when OS Location Services are disabled. " +
+            "Check: Settings → Privacy & Security → Location → On.",
         );
       } else {
         console.error("Geolocation failed:", message);

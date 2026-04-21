@@ -17,7 +17,7 @@ const SelectRole = () => {
     try {
       const token = localStorage.getItem("token");
       const result = await axios.put(
-        `${authService}/api/auth/add-role`,
+        `${authService}/auth/add-role`,
         { role },
         {
           headers: {
