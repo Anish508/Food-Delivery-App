@@ -9,6 +9,7 @@ import { Navbar } from "./components/Navbar";
 import Account from "./pages/Account";
 import { useAppStore } from "./store/useAppStore";
 import { useEffect } from "react";
+import Restaurant from "./pages/Restaurant";
 const App = () => {
   const fetchUser = useAppStore((state) => state.fetchUser);
   const fetchGeoLocation = useAppStore((state) => state.fetchGeoLocation);
@@ -17,6 +18,11 @@ const App = () => {
     fetchGeoLocation();
   }, []);
 
+  const user = useAppStore((state) => state.user);
+
+  if (user && user.role === "seller") {
+    return <Restaurant />;
+  }
   return (
     <BrowserRouter>
       <Navbar />

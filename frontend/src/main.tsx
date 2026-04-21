@@ -3,8 +3,8 @@ import "./index.css";
 import App from "./App.tsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-export const authService = "/api";
-
+export const authService = "/api/auth";
+export const restauranrService = "/api/restaurant";
 createRoot(document.getElementById("root")!).render(
   <GoogleOAuthProvider clientId="211365934869-h4qamlcgn0dpjd9ubb1u0f5va21d7dpd.apps.googleusercontent.com">
     <App />
