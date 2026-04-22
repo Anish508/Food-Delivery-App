@@ -7,6 +7,7 @@ export interface IUser {
   email: string;
   image: string;
   role: string;
+  restaurantId: string;
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -46,7 +47,7 @@ export const isAuth = async (
     ) as JwtPayload;
 
     // 4. Validate payload
-    if (!decoded || !decoded.id) {
+    if (!decoded || !decoded.user) {
       res.status(401).json({
         message: "Unauthorized - Invalid token",
       });

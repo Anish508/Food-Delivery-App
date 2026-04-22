@@ -6,6 +6,7 @@ import restaurantRoute from "./Routes/restaurent-routes.js";
 dotenv.config();
 
 const app = express();
+
 app.use(
   cors({
     origin: "*",
