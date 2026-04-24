@@ -24,20 +24,26 @@ const App = () => {
     return <Restaurant />;
   }
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route element={<PublicRoute />}>
-          <Route path="/login" element={<Login />} />
-        </Route>
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/select-role" element={<SelectRole />} />
-          <Route path="/account" element={<Account />} />
-        </Route>
-      </Routes>
-      <Toaster />
-    </BrowserRouter>
+    <>
+      <Toaster /> {/* ALWAYS mounted */}
+      {user && user.role === "seller" ? (
+        <Restaurant />
+      ) : (
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route element={<PublicRoute />}>
+              <Route path="/login" element={<Login />} />
+            </Route>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/select-role" element={<SelectRole />} />
+              <Route path="/account" element={<Account />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      )}
+    </>
   );
 };
 
